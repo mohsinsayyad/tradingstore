@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.trading.store.model.TradingStore;
@@ -52,13 +53,12 @@ public class TradingStoreDao implements ITradingStoreDao {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * This method validates version. if lower version received then exception is
 	 * throwned.
 	 */
-	@Override
-	public boolean validateTradingStoreVersion(TradingStore store) throws Exception {
+	private boolean validateTradingStoreVersion(TradingStore store) throws Exception {
 		Optional<TradingStore> tradingStore = tradingStores.stream()
 				.filter(st -> st.getTradeId().equals(store.getTradeId())).collect(Collectors.toList()).stream()
 				.max(Comparator.comparing(TradingStore::getVersion));
@@ -73,8 +73,7 @@ public class TradingStoreDao implements ITradingStoreDao {
 	/**
 	 * This method validates maturity date. if not valid then throw exception.
 	 */
-	@Override
-	public boolean validateTradingStoreMaturityDate(TradingStore store) {
+	private boolean validateTradingStoreMaturityDate(TradingStore store) {
 		if (store.getMaturityDate().isBefore(LocalDate.now())) {
 			logger.info("Maturity Date is less than todays date :: " + store.getMaturityDate());
 			return false;
@@ -82,6 +81,8 @@ public class TradingStoreDao implements ITradingStoreDao {
 		return true;
 	}
 
+
+	
 	/**
 	 * This method will update the Trade. True if updated else it returns false.
 	 */
@@ -93,7 +94,7 @@ public class TradingStoreDao implements ITradingStoreDao {
 		
 		if (tradingStore.isPresent()) {
 			int index = tradingStores.indexOf(tradingStore.get());
-			if (index >= 0 && validateTradingStoreVersion(store)) {
+			if (index >= 0) {
 				tradingStores.set(index, store);
 				logger.info("Update Trading Store with Trade Id :: " + store.getTradeId());
 				logger.info("Updated Trading Store :: " + tradingStores);
@@ -104,18 +105,20 @@ public class TradingStoreDao implements ITradingStoreDao {
 	}
 
 	/**
-	 * Method to update Expiry Flag.
+	 * Method to update Expiry Flag after every 5 minutes.
 	 */
 	@Override
+	@Scheduled(cron = "0 0/1 * * * *")
 	public boolean updateExpiryFlag() {
 		List<TradingStore> tradingStore = tradingStores.stream()
-				.filter(ts -> ts.getMaturityDate().isBefore(LocalDate.now())).map(ts -> {
+				.filter(ts -> ts.getMaturityDate().isBefore(LocalDate.now()) && "N".equalsIgnoreCase(ts.getExpired()))
+				.map(ts -> {
 					ts.setExpired("Y");
 					return ts;
 				}).collect(Collectors.toList());
 
 		logger.info("Maturity date updated for Trades :: " + tradingStore);
-
+		logger.info("Trades after expiry flag updates :: " + tradingStores);
 		return !tradingStore.isEmpty();
 	}
 }
