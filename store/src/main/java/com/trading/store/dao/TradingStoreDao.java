@@ -8,8 +8,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.trading.store.model.TradingStore;
@@ -87,5 +85,14 @@ public class TradingStoreDao implements ITradingStoreDao{
 		return false;
 	}
 	
-	
+	@Override
+	public boolean updateExpiryFlag() {
+		List<TradingStore> tradingStore = tradingStores.stream()
+				.filter(ts -> ts.getMaturityDate().isBefore(LocalDate.now())).map(ts -> { ts.setExpired("Y");
+					return ts;
+				}).collect(Collectors.toList());
+				
+		logger.info("Maturity date updated for Trades :: " + tradingStore);		
+		return false;
+	}
 }
