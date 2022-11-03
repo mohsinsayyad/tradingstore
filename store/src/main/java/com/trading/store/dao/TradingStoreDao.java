@@ -31,6 +31,9 @@ public class TradingStoreDao implements ITradingStoreDao{
 		logger.info("Trading Store :: " + tradingStores);
 	}
 
+	/**
+	 * This method adds trade only if version & maturity date is valid.
+	 */
 	@Override
 	public boolean addTradingStore(TradingStore store) throws Exception {
 		boolean validateTradingStoreVersion = validateTradingStoreVersion(store);
@@ -43,6 +46,9 @@ public class TradingStoreDao implements ITradingStoreDao{
 		return false;
 	}
 
+	/**
+	 * This method validates version. if lower version received then exception is throwned.
+	 */
 	@Override
 	public boolean validateTradingStoreVersion(TradingStore store) throws Exception {
 		TradingStore tradingStore = tradingStores.stream()
@@ -58,6 +64,9 @@ public class TradingStoreDao implements ITradingStoreDao{
 		return true;
 	}
 
+	/**
+	 * This method validates maturity date. if not valid then throw exception.
+	 */
 	@Override
 	public boolean validateTradingStoreMaturityDate(TradingStore store) {
 		if(store.getMaturityDate().isBefore(LocalDate.now())) {
@@ -67,6 +76,9 @@ public class TradingStoreDao implements ITradingStoreDao{
 		return true;
 	}
 
+	/**
+	 * This method will update the Trade. True if updated else it returns false.
+	 */
 	@Override
 	public boolean updateTradingStore(TradingStore store) throws Exception {
 		TradingStore tradingStore = tradingStores.stream()
@@ -85,6 +97,9 @@ public class TradingStoreDao implements ITradingStoreDao{
 		return false;
 	}
 	
+	/**
+	 * Method to update Expiry Flag.
+	 */
 	@Override
 	public boolean updateExpiryFlag() {
 		List<TradingStore> tradingStore = tradingStores.stream()
