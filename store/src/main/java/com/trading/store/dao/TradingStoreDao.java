@@ -73,7 +73,7 @@ public class TradingStoreDao implements ITradingStoreDao {
 	@Override
 	public boolean validateTradingStoreMaturityDate(TradingStore store) {
 		if (store.getMaturityDate().isBefore(LocalDate.now())) {
-			logger.info("Invalid Maturity Date :: " + store.getMaturityDate());
+			logger.info("Maturity Date is less than todays date :: " + store.getMaturityDate());
 			return false;
 		}
 		return true;
