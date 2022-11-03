@@ -27,9 +27,9 @@ public class TradingStoreDao implements ITradingStoreDao {
 		tradingStores = Stream
 				.of(new TradingStore("T1", 1, "CP-1", "B1", LocalDate.of(2020, 5, 20), LocalDate.now(), "N"),
 						new TradingStore("T2", 2, "CP-2", "B1", LocalDate.of(2021, 5, 20), LocalDate.now(), "N"),
-						new TradingStore("T3", 1, "CP-1", "B1", LocalDate.of(2021, 5, 20), LocalDate.of(2015, 3, 14),
+						new TradingStore("T2", 1, "CP-1", "B1", LocalDate.of(2021, 5, 20), LocalDate.of(2015, 3, 14),
 								"N"),
-						new TradingStore("T4", 3, "CP-3", "B2", LocalDate.of(2014, 5, 20), LocalDate.now(), "Y"))
+						new TradingStore("T3", 3, "CP-3", "B2", LocalDate.of(2014, 5, 20), LocalDate.now(), "Y"))
 				.collect(Collectors.toList());
 
 		logger.info("Trading Store :: " + tradingStores);
@@ -42,11 +42,14 @@ public class TradingStoreDao implements ITradingStoreDao {
 	public boolean addTradingStore(TradingStore store) throws Exception {
 		boolean validateTradingStoreVersion = validateTradingStoreVersion(store);
 		boolean validateTradingStoreMaturityDate = validateTradingStoreMaturityDate(store);
-		if (validateTradingStoreVersion && validateTradingStoreMaturityDate) {
-			logger.info("Trading Store Added :: " + store);
-			return tradingStores.add(store);
+		if(validateTradingStoreMaturityDate) {
+			if (validateTradingStoreVersion) {
+				logger.info("Trading Store Added :: " + store);
+				return tradingStores.add(store);
+			}
+			logger.info("Trading Store aready exists :: " + store);
+			return updateTradingStore(store);
 		}
-		logger.info("Trading Store aready exists :: " + store);
 		return false;
 	}
 
