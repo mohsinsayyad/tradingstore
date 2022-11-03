@@ -53,8 +53,7 @@ class StoreApplicationTests {
 
 		TradingStore store = new TradingStore("T1", 2, "CP-1", "B1", LocalDate.of(2021, 5, 20), LocalDate.now(), "N");
 		boolean isValidDate = tradingStoreDao.validateTradingStoreMaturityDate(store);
-		Assert.state(isValidDate, "Valid Maturity Date");
-		assertEquals(isValidDate, false);
+		assertEquals(isValidDate, false, "Invalid Maurity Date");
 	}
 
 	@Test
@@ -64,10 +63,30 @@ class StoreApplicationTests {
 		Assert.state(tradeAdded, "Trade added successfully");
 		assertEquals(tradeAdded, true);
 	}
+	
+	@Test
+	public void addTradingStoreT5() throws Exception {
+		TradingStore store = new TradingStore("T5", 1, "CP-1", "B1", LocalDate.of(2023, 5, 20), LocalDate.now(), "N");
+		boolean tradeAdded = tradingStoreDao.addTradingStore(store);
+		Assert.state(tradeAdded, "Trade added successfully");
+		assertEquals(tradeAdded, true);
+	}
 
 	@Test
-	public void addTradingStore_Failure() {
-		TradingStore store = new TradingStore("T1", 2, "CP-1", "B1", LocalDate.of(2023, 5, 20), LocalDate.now(), "N");
+	public void addTradingStore_Failure_Version() {
+		TradingStore store = new TradingStore("T1", 1, "CP-1", "B1", LocalDate.of(2023, 5, 20), LocalDate.now(), "N");
+		try {
+			boolean tradeAdded = tradingStoreDao.addTradingStore(store);
+			Assert.state(tradeAdded, "Trade not added");
+			assertEquals(tradeAdded, false);
+		} catch (Exception e) {
+			assertNotNull(e);
+		}
+	}
+	
+	@Test
+	public void addTradingStore_Failure_MaturityDate() {
+		TradingStore store = new TradingStore("T2", 3, "CP-1", "B1", LocalDate.of(2017, 5, 20), LocalDate.now(), "N");
 		try {
 			boolean tradeAdded = tradingStoreDao.addTradingStore(store);
 			Assert.state(tradeAdded, "Trade not added");
@@ -88,8 +107,7 @@ class StoreApplicationTests {
 	@Test
 	public void updateExpiryFlag() {
 		boolean expiryFlagUpdated = tradingStoreDao.updateExpiryFlag();
-		Assert.state(expiryFlagUpdated, "Expiry Flag Updated updated successfully");
-		assertEquals(expiryFlagUpdated, true);
+		assertEquals(expiryFlagUpdated, true, "Expiry Flag Updated updated successfully");
 	}
 	
 }
