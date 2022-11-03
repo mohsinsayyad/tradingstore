@@ -1,7 +1,6 @@
 package com.trading.store.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class TradingStore {
 
