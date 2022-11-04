@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +30,7 @@ class StoreApplicationTests {
 	private TradingStoreDao app = new TradingStoreDao();
 
 	@Test
+	@Order(1)
 	public void validateTradingStoreVersion_Success() throws Exception {
 		//mock private methods
 		TradingStore store = new TradingStore("T1", 2, "CP-1", "B1", LocalDate.of(2023, 5, 20), LocalDate.now(), "N");
@@ -40,6 +42,7 @@ class StoreApplicationTests {
 	}
 
 	@Test
+	@Order(2)
 	public void validateTradingStoreVersion_Failure() {
 		TradingStore store = new TradingStore("T2", 1, "CP-1", "B1", LocalDate.of(2023, 5, 20), LocalDate.now(), "N");
 		try {
@@ -79,6 +82,7 @@ class StoreApplicationTests {
 	}
 
 	@Test
+	@Order(3)
 	public void addTradingStore() throws Exception {
 		TradingStore store = new TradingStore("T1", 2, "CP-1", "B1", LocalDate.of(2023, 5, 20), LocalDate.now(), "N");
 		boolean tradeAdded = tradingStoreDao.addTradingStore(store);
@@ -87,6 +91,7 @@ class StoreApplicationTests {
 	}
 
 	@Test
+	@Order(4)
 	public void addTradingStoreT5() throws Exception {
 		TradingStore store = new TradingStore("T5", 1, "CP-1", "B1", LocalDate.of(2023, 5, 20), LocalDate.now(), "N");
 		boolean tradeAdded = tradingStoreDao.addTradingStore(store);
@@ -127,6 +132,7 @@ class StoreApplicationTests {
 	}
 
 	@Test
+	@Order(5)
 	public void updateExpiryFlag() {
 		boolean expiryFlagUpdated = tradingStoreDao.updateExpiryFlag();
 		assertEquals(expiryFlagUpdated, true, "Expiry Flag Updated updated successfully");
