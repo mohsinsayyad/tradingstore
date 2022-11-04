@@ -21,7 +21,7 @@ import com.trading.store.model.TradingStore;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-class StoreApplicationTests {
+class StoreApplicationDaoTests {
 
 	@Autowired
 	ITradingStoreDao tradingStoreDao;
